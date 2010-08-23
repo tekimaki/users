@@ -1,5 +1,25 @@
 <?php
 
+global $gBitSystem;
+
+$gBitSystem->registerPackageInfo( USERS_PKG_NAME, array(
+	'description' => "The users package contains all user information and gives you the possiblity to assign permissions to groups of users.",
+	'license' => '<a href="http://www.gnu.org/licenses/licenses.html#LGPL">LGPL</a>',
+) );
+
+// Package Requirements
+$gBitSystem->registerRequirements( USERS_PKG_NAME, array(
+	'liberty'   => array( 'min' => '2.1.4' ),
+	'kernel'    => array( 'min' => '2.0.0' ),
+	'themes'    => array( 'min' => '2.0.0' ),
+	'languages' => array( 'min' => '2.0.0' ),
+));
+
+
+// Install process
+global $gBitInstaller;
+if( is_object( $gBitInstaller ) ){
+
 $tables = array(
 
 'users_users' => "
@@ -122,11 +142,6 @@ $indices = array (
 
 $gBitInstaller->registerSchemaIndexes( USERS_PKG_NAME, $indices );
 
-$gBitInstaller->registerPackageInfo( USERS_PKG_NAME, array(
-	'description' => "The users package contains all user information and gives you the possiblity to assign permissions to groups of users.",
-	'license' => '<a href="http://www.gnu.org/licenses/licenses.html#LGPL">LGPL</a>',
-) );
-
 // ### Sequences
 $sequences = array (
 	'users_users_user_id_seq' => array( 'start' => 2 ),
@@ -208,10 +223,4 @@ $gBitInstaller->registerUserPermissions( USERS_PKG_NAME, array(
 	array('p_users_bypass_captcha', 'Can bypass spam validation mechanisms', 'registered', USERS_PKG_NAME),
 ) );
 
-// Package Requirements
-$gBitInstaller->registerRequirements( USERS_PKG_NAME, array(
-	'liberty'   => array( 'min' => '2.1.4' ),
-	'kernel'    => array( 'min' => '2.0.0' ),
-	'themes'    => array( 'min' => '2.0.0' ),
-	'languages' => array( 'min' => '2.0.0' ),
-));
+}

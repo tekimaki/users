@@ -606,7 +606,6 @@ class BitUser extends LibertyMime {
 				if( $instance && $instance->canManageAuth() ) {
 					if( $userId = $instance->createUser( $pParamHash )) {
 						$this->mUserId = $userId;
-						// @fork do not commit back to bitweaver
 						// this is a better place for the register service
 						$this->invokeServices( 'users_register_function', $pParamHash );
 						break;
@@ -1307,7 +1306,6 @@ class BitUser extends LibertyMime {
 				unset( $this->mInfo );
 				$this->mErrors['login'] = tra( 'Invalid username or password' );
 
-				// @fork do not commit back to bitweaver
 				// if 'loginfrom' session var is present, send error message to that url
 				if(isset($_SESSION['loginfrom'])) 
 					$url = $_SESSION['loginfrom'].'?error=' . urlencode( $this->mErrors['login'] );
@@ -1315,6 +1313,7 @@ class BitUser extends LibertyMime {
 					$url = USERS_PKG_URL.'login.php?error=' . urlencode( $this->mErrors['login'] );
 			}
 		}
+		$this->mDb->CompleteTrans();
 
 		// check for HTTPS mode and redirect back to non-ssl when not requested, or a  SSL login was forced
 		if( isset( $_SERVER['HTTPS'] ) && strtolower( $_SERVER['HTTPS'] ) == 'on' ) {
@@ -1446,7 +1445,6 @@ class BitUser extends LibertyMime {
 			$this->load();
 			//on first time login we run the users registation service
 			if( $this->mInfo['last_login'] == NULL ) {
-				// @fork do not commit back to bitweaver
 				// this was the register service which was retarded because no data could be passed along
 				$this->invokeServices( 'users_initlogin_function' );
 			}

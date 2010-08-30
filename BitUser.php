@@ -606,6 +606,9 @@ class BitUser extends LibertyMime {
 				if( $instance && $instance->canManageAuth() ) {
 					if( $userId = $instance->createUser( $pParamHash )) {
 						$this->mUserId = $userId;
+						// @fork do not commit back to bitweaver
+						// this is a better place for the register service
+						$this->invokeServices( 'users_register_function', $pParamHash );
 						break;
 					} else {
 						$this->mErrors = array_merge( $this->mErrors, $instance->mErrors );
@@ -1046,6 +1049,7 @@ class BitUser extends LibertyMime {
 		$update['current_view'] = $_SERVER['PHP_SELF'];
 
 		if( empty( $gLightWeightScan ) ) {
+			$this->mDb->StartTrans();
 			$row = $this->mDb->getRow( "SELECT `last_get`, `connect_time`, `get_count`, `user_agent`, `current_view` FROM `".BIT_DB_PREFIX."users_cnxn` WHERE `cookie`=? ", array( $pSessionId ) );
 			if( $gBitUser->isRegistered() ) {
 				$update['user_id'] = $gBitUser->mUserId;
@@ -1079,6 +1083,7 @@ class BitUser extends LibertyMime {
 				$query = "DELETE from `".BIT_DB_PREFIX."users_cnxn` where `connect_time` < ?";
 				$result = $this->mDb->query($query, array($oldy));
 			}
+			$this->mDb->CompleteTrans();
 		}
 		return true;
 	}
@@ -1301,10 +1306,15 @@ class BitUser extends LibertyMime {
 				$this->mUserId = ANONYMOUS_USER_ID;
 				unset( $this->mInfo );
 				$this->mErrors['login'] = tra( 'Invalid username or password' );
-				$url = USERS_PKG_URL.'login.php?error=' . urlencode( $this->mErrors['login'] );
+
+				// @fork do not commit back to bitweaver
+				// if 'loginfrom' session var is present, send error message to that url
+				if(isset($_SESSION['loginfrom'])) 
+					$url = $_SESSION['loginfrom'].'?error=' . urlencode( $this->mErrors['login'] );
+				else
+					$url = USERS_PKG_URL.'login.php?error=' . urlencode( $this->mErrors['login'] );
 			}
 		}
-		$this->mDb->CompleteTrans();
 
 		// check for HTTPS mode and redirect back to non-ssl when not requested, or a  SSL login was forced
 		if( isset( $_SERVER['HTTPS'] ) && strtolower( $_SERVER['HTTPS'] ) == 'on' ) {
@@ -1436,7 +1446,9 @@ class BitUser extends LibertyMime {
 			$this->load();
 			//on first time login we run the users registation service
 			if( $this->mInfo['last_login'] == NULL ) {
-				$this->invokeServices( 'users_register_function' );
+				// @fork do not commit back to bitweaver
+				// this was the register service which was retarded because no data could be passed along
+				$this->invokeServices( 'users_initlogin_function' );
 			}
 			$this->updateLastLogin( $this->mUserId );
 		}
@@ -1674,7 +1686,7 @@ class BitUser extends LibertyMime {
 			// if renew password config is set then set - otherwise set null to respect no pass due
 			$passDue = NULL;
 			if( $gBitSystem->getConfig('users_pass_due') ) {
-				$now = $gBitSystem->getUTCTime();;
+				$now = $gBitSystem->getUTCTime();
 				// renew password according to config value
 				$passDue = $now + ( 60 * 60 * 24 * $gBitSystem->getConfig( 'users_pass_due' ));
 			}
@@ -2376,7 +2388,7 @@ class BitUser extends LibertyMime {
 	function getList( &$pParamHash ) {
 		global $gBitSystem;
 		if( empty( $pParamHash['sort_mode'] )) {
-			$pParamHash['sort_mode'] = 'registration_date_desc';
+			$pParamHash['sort_mode'] = 'uu.registration_date_desc';
 		}
 
 		LibertyContent::prepGetList( $pParamHash );
@@ -2408,16 +2420,22 @@ class BitUser extends LibertyMime {
 		}
 
 		// lets search for a user
-		if ( $pParamHash['find'] ) {
+		if ( !empty( $pParamHash['find'] ) ){
 			$whereSql .= " AND ( UPPER( uu.`login` ) LIKE ? OR UPPER( uu.`real_name` ) LIKE ? OR UPPER( uu.`email` ) LIKE ? ) ";
 			$bindVars[] = '%'.strtoupper( $pParamHash['find'] ).'%';
 			$bindVars[] = '%'.strtoupper( $pParamHash['find'] ).'%';
 			$bindVars[] = '%'.strtoupper( $pParamHash['find'] ).'%';
 		}
 
+		// limit to users in a particular group
+		if( !empty( $pParamHash['group_id'] ) && @$this->verifyId( $pParamHash['group_id'] ) ){
+			$groupId = (int)$pParamHash['group_id']; 
+			$joinSql .= " INNER JOIN `".BIT_DB_PREFIX."users_groups_map` ugm ON ( ugm.`user_id` = uu.`user_id` AND ugm.`group_id` = $groupId )"; // a little naughty concating this way, we int cast the value at least, this is to avoid having to have 2 bindVars hashes
+		}
+
 		// Return an array of users indicating name, email, last changed pages, versions, last_login
 		$query = "
-			SELECT uu.*, lc.`content_status_id`, tf_ava.`storage_path` AS `avatar_storage_path` $selectSql
+			SELECT uu.*, lc.`created`, lc.`content_status_id`, tf_ava.`storage_path` AS `avatar_storage_path` $selectSql
 			FROM `".BIT_DB_PREFIX."users_users` uu
 				INNER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON (uu.`content_id`=lc.`content_id`)
 				$joinSql
@@ -2452,7 +2470,9 @@ class BitUser extends LibertyMime {
 					'size'         => 'avatar'
 				));
 			}
-			$res["groups"] = $this->getGroups( $res['user_id'] );
+			if( empty( $pParamHash['exclude_groups'] ) ){
+				$res["groups"] = $this->getGroups( $res['user_id'] );
+			}
 			array_push( $ret, $res );
 		}
 		$retval = array();

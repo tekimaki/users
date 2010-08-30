@@ -595,7 +595,7 @@ class BitUser extends LibertyMime {
 	 * @return TRUE on success, FALSE on failure
 	 */
 	function register( &$pParamHash, $pNotifyRegistrant=TRUE ) {
-		global $notificationlib, $gBitSmarty, $gBitSystem, $gBitUser;
+		global $notificationlib, $gBitSmarty, $gBitSystem, $gBitUser, $gSwitchboardSystem;
 		$ret = FALSE;
 		if( !empty( $_FILES['user_portrait_file'] ) && empty( $_FILES['user_avatar_file'] ) ) {
 			$pParamHash['user_auto_avatar'] = TRUE;
@@ -661,7 +661,19 @@ class BitUser extends LibertyMime {
 					$gBitSmarty->assign( 'mailUserId',$this->mUserId );
 					$gBitSmarty->assign( 'mailProvPass',$apass );
 					$mail_data = $gBitSmarty->fetch( 'bitpackage:users/user_validation_mail.tpl' );
-					mail( $pParamHash["email"], $siteName.' - '.tra( 'Your registration information' ), $mail_data, "From: ".$gBitSystem->getConfig('site_sender_email')."\r\nContent-type: text/plain;charset=utf-8\r\n" );
+
+					$msg = array();
+
+					//send registration info to new user
+					$recipients = array( array( 'email' => $pParamHash["email"] ), );
+					$msg['recipients'] = $recipients;
+
+					$msg['subject'] = $siteName.' - '.tra( 'Your registration information' );
+
+					$msg['alt_message'] = $mail_data;
+	
+					$gSwitchboardSystem->sendEmail( $msg );
+					
 					$gBitSmarty->assign( 'showmsg', 'y' );
 
 					$this->mLogs['confirm'] = 'Validation email sent.';
@@ -670,9 +682,21 @@ class BitUser extends LibertyMime {
 					$gBitSmarty->assign( 'mailPassword',$pParamHash['password'] );
 					$gBitSmarty->assign( 'mailEmail',$pParamHash['email'] );
 					$mail_data = $gBitSmarty->fetch( 'bitpackage:users/welcome_mail.tpl' );
-					mail( $pParamHash["email"], tra( 'Welcome to' ).' '.$siteName, $mail_data, "From: ".$gBitSystem->getConfig( 'site_sender_email' )."\r\nContent-type: text/plain;charset=utf-8\r\n" );
 
+					$msg = array();
+
+					//email welcome info to new user
+					$recipients = array( array( 'email' => $pParamHash["email"] ), );
+					$msg['recipients'] = $recipients;
+
+					$msg['subject'] = tra( 'Welcome to' ).' '.$siteName;
+
+					$msg['alt_message'] = $mail_data;
+	
+					$gSwitchboardSystem->sendEmail( $msg );
+					
 					$this->mLogs['welcome'] = 'Welcome email sent.';
+
 				}
 			}
 			$logHash['action_log']['title'] = $pParamHash['login'];

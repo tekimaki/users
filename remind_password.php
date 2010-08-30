@@ -52,7 +52,19 @@ if( $gBitUser->isRegistered() ) {
 		$gBitSmarty->assign('mail_pass', $pass);
 		$mail_data = $gBitSmarty->fetch('bitpackage:users/password_reminder.tpl');
 		$subject = tra( "Your password for" ).": ".$gBitSystem->getConfig( 'site_title', $_SERVER['HTTP_HOST'] );
-		mail( $userInfo['email'], $subject, $mail_data, "From: ".$gBitSystem->getConfig( 'site_sender_email' )."\r\nContent-type: text/plain;charset=utf-8\r\n");
+
+		$msg = array();
+
+		//email password reminder text to user
+		$recipients = array( array( 'email' => $userInfo['email'] ), );
+		$msg['recipients'] = $recipients;
+
+		$msg['subject'] = $subject;
+
+		$msg['alt_message'] = $mail_data;
+	
+		$gSwitchboardSystem->sendEmail( $msg );
+		
 		// Just show "success" message and no form
 	} else {
 		// Show error message (and leave form visible so user can fix problem)

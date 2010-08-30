@@ -272,7 +272,6 @@ class BitUser extends LibertyMime {
 			// LOWER CASE all emails
 			$pParamHash['email'] = strtolower( $pParamHash['email'] );
 
-			// @fork do not commit back to bitweaver
 			// users can be provisionally registered without their knowledge and then clamed via registration
 			// their account must be flagged as such an account
 			if( $this->userExists( array( 'email' => $pParamHash['email'] ) ) ){
@@ -286,7 +285,6 @@ class BitUser extends LibertyMime {
 			}
 		}
 		// check some new user requirements
-		// @fork do not commit back to bitweaver
 		if( !$this->isRegistered() || $provisionalUser ) {
 			if( empty( $pParamHash['login'] ) ) {
 				// choose a login based on the username in the email

@@ -13,7 +13,7 @@ $gBitSystem->registerRequirements( USERS_PKG_NAME, array(
 	'kernel'    => array( 'min' => '2.0.0' ),
 	'themes'    => array( 'min' => '2.0.0' ),
 	'languages' => array( 'min' => '2.0.0' ),
-	'switchboard' => array( 'min' => '0.0.0' );
+	'switchboard' => array( 'min' => '0.0.0' ),
 ));
 
 

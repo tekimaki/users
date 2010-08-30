@@ -263,16 +263,31 @@ class BitUser extends LibertyMime {
 		if( !empty( $pParamHash['real_name'] ) ) {
 			$pParamHash['user_store']['real_name'] = substr( $pParamHash['real_name'], 0, 64 );
 		}
+
+		//moved up :: variable is used outside of next if statement
+		$provisionalUser = FALSE;
+		
 		// require email
 		if( !empty( $pParamHash['email'] ) ) {
 			// LOWER CASE all emails
 			$pParamHash['email'] = strtolower( $pParamHash['email'] );
-			if( $emailResult = $this->verifyEmail( $pParamHash['email'] , $this->mErrors) ) {
+
+			// @fork do not commit back to bitweaver
+			// users can be provisionally registered without their knowledge and then clamed via registration
+			// their account must be flagged as such an account
+			if( $this->userExists( array( 'email' => $pParamHash['email'] ) ) ){
+				$existingUserInfo = $this->getUserInfo( array( 'email' => $pParamHash['email'] ) );
+				$provisionalUser = $this->getUserPreference( 'provisional_user', FALSE, $existingUserInfo['user_id'] );
+			}
+			if( $provisionalUser ){
+				$this->mUserId = $existingUserInfo['user_id'];
+			}elseif( $emailResult = $this->verifyEmail( $pParamHash['email'] , $this->mErrors) ) {
 				$pParamHash['verified_email'] = ($emailResult === true);
 			}
 		}
 		// check some new user requirements
-		if( !$this->isRegistered() ) {
+		// @fork do not commit back to bitweaver
+		if( !$this->isRegistered() || $provisionalUser ) {
 			if( empty( $pParamHash['login'] ) ) {
 				// choose a login based on the username in the email
 				if( empty($pParamHash['email']) ){

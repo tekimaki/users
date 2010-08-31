@@ -59,7 +59,7 @@ $tables = array(
 ",
 
 'users_permissions' => "
-  perm_name C(30) PRIMARY,
+  perm_name C(128) PRIMARY,
   perm_desc C(250),
   perm_level C(80),
   package C(100)

@@ -707,6 +707,21 @@ class BitUser extends LibertyMime {
 		return( $ret );
 	}
 
+	function registerProvisionalUser( &$pParamHash, $pNotifyRegistrant=FALSE ){
+		if( !$this->isRegistered() ){
+			$this->mDb->StartTrans();
+			if( $this->register($pParamHash, $pNotifyRegistrant) ){
+				// mark this user as provisionally registered
+				$this->storePreference( 'provisional_user', TRUE );
+				$this->load();
+			}
+			$this->mDb->CompleteTrans();
+		}else{
+			$this->setError( 'provisional_registration', tra('Attempted to provisionally register an already registered user') );
+		}
+		return( count( $this->getErrors() ) == 0 );
+	}
+
 	/**
 	 * verifyCaptcha 
 	 * 
@@ -1165,9 +1180,8 @@ class BitUser extends LibertyMime {
 		$ret = FALSE;
 		if( $pForceCheck == TRUE || !empty( $_REQUEST['tk'] ) ) {
 			if( empty( $_REQUEST['tk'] ) || (!($ret = $_REQUEST['tk'] == $this->mTicket ) && $pFatalOnError) ) {
-				$userString = $gBitUser->isRegistered() ? "\nUSER ID: ".$gBitUser->mUserId.' ( '.$gBitUser->getField( 'email' ).' ) ' : '';
-				@error_log( tra( "Security Violation" )."$userString ".$_SERVER['REMOTE_ADDR']."\nURI: $_SERVER[REQUEST_URI] \nREFERER: $_SERVER[HTTP_REFERER] " );
-				$gBitSystem->fatalError( tra( "Security Violation" ));
+				$gBitSystem->securityViolation( 'ticket verification error' );
+				die;	
 			}
 		}
 		return $ret;

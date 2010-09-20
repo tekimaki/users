@@ -1,4 +1,4 @@
-<?php
+<?php /* -*- Mode: php; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4; -*- */
 /**
  * $Header$
  *
@@ -2619,6 +2619,21 @@ function users_favs_content_list_sql( &$pObject, $pParamHash=NULL ){
 	}
 	return $ret;
 }
+
+function users_expunge_attachment( &$pObject, $pParamHash=NULL ) {
+	// there might be situations where we remove user images including portrait, avatar or logo                            
+	// This needs to happen before the plugin can do it's work due to constraints                                          
+	$types = array( 'portrait', 'avatar', 'logo' );
+	if ( !empty($pParamHash['attachment_id']) ) {
+		$pAttachmentId = $pParamHash['attachment_id'];
+		foreach( $types as $type ) {
+			$sql = "UPDATE `".BIT_DB_PREFIX
+				."users_users` SET `{$type}_attachment_id` = NULL WHERE `{$type}_attachment_id` = ?";
+			$pObject->mDb->query( $sql, array( $pAttachmentId ));
+		}
+	}
+}
+
 // }}}
 
 /* vim: :set fdm=marker : */

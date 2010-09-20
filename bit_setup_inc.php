@@ -20,6 +20,7 @@ $gLibertySystem->registerService( CONTENT_SERVICE_USERS_FAVS,
 	array(
 		'content_icon_tpl' => 'bitpackage:users/user_favs_service_icon_inc.tpl',
 		'content_list_sql_function' => 'users_favs_content_list_sql',
+		'upload_expunge_attachment_function' => 'users_expunge_attachment',
 	),
 	array( 
 		'description' => tra( 'Provides a ajax service enabling users to bookmark any content as a favorite.' ),

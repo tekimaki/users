@@ -126,6 +126,7 @@ foreach( array_keys( $tables ) AS $tableName ) {
 }
 
 $indices = array (
+	'users_users_content_id_idx' => array( 'table' => 'users_users', 'cols' => 'content_id', 'opts' => array('UNIQUE') ),
 	'users_users_email_idx' => array( 'table' => 'users_users', 'cols' => 'email', 'opts' => array('UNIQUE') ),
 	'users_users_login_idx' => array( 'table' => 'users_users', 'cols' => 'login', 'opts' => array('UNIQUE') ),
 	'users_users_avatar_atment_idx' => array( 'table' => 'users_users', 'cols' => 'avatar_attachment_id', 'opts' => NULL ),

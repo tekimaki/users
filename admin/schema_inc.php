@@ -79,7 +79,7 @@ $tables = array(
 
 'users_group_permissions' => "
   group_id I4 PRIMARY,
-  perm_name C(30) PRIMARY,
+  perm_name C(128) PRIMARY,
   perm_value C(1) default ''
   CONSTRAINT ', CONSTRAINT `users_group_perm_group_ref` FOREIGN KEY (`group_id`) REFERENCES `".BIT_DB_PREFIX."users_groups` (`group_id`)
  				, CONSTRAINT `users_group_perm_perm_ref` FOREIGN KEY (`perm_name`) REFERENCES `".BIT_DB_PREFIX."users_permissions` (`perm_name`)'

@@ -19,6 +19,9 @@ array( 'DATADICT' => array(
 		'users_permissions' => array(
 			'perm_name' => array( '`perm_name`', 'TYPE VARCHAR(128)' ),
 		),
+		'users_group_permissions' => array(
+			'perm_name' => array( '`perm_name`', 'TYPE VARCHAR(128)' ),
+		),
 	)),
 )),
 

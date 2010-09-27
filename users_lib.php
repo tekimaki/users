@@ -145,7 +145,7 @@ function users_httpauth ( $pRequireSSL = FALSE ){
 	}
 	// require http auth
 	else{
-		header('WWW-Authenticate: Basic realm="Test"');
+		header('WWW-Authenticate: Basic realm="'.$gBitSystem->getConfig('site_title').'"');
 		header('HTTP/1.0 401 Unauthorized');
 		$gBitSystem->fatalError( tra('HTTP Authentication Canceled') );
 		exit;

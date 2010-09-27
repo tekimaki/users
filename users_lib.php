@@ -113,22 +113,24 @@ function scramble_email( $email, $method = 'unicode' ) {
 }
 
 
-function users_httpauth(){
+function users_httpauth ( $pRequireSSL = FALSE ){
 	global $gBitSystem, $gBitUser;
-	// require ssl
-	$https_mode = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
-	// no https redirect
-	if( !$https_mode ){
-		$url = $gBitSystem->getConfig( 'site_https_domain' );
-		$site_https_port = $gBitSystem->getConfig('site_https_port', 443);
-		if ($site_https_port != 443)
-			$url .= ':' . $site_https_port;
-		$url .= $gBitSystem->getConfig( 'site_https_prefix' ) . $_SERVER['REQUEST_URI'];
-		if (SID)
-			$url .= (!empty( $_SERVER['QUERY_STRING'] )?'&':'?') . SID;
-		$url = preg_replace('/\/+/', '/', $url);
-		header("Location: https://$url");
-		exit;
+	if( $pRequireSSL ){
+		// require ssl
+		$https_mode = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off';
+		// no https redirect
+		if( !$https_mode ){
+			$url = $gBitSystem->getConfig( 'site_https_domain' );
+			$site_https_port = $gBitSystem->getConfig('site_https_port', 443);
+			if ($site_https_port != 443)
+				$url .= ':' . $site_https_port;
+			$url .= $gBitSystem->getConfig( 'site_https_prefix' ) . $_SERVER['REQUEST_URI'];
+			if (SID)
+				$url .= (!empty( $_SERVER['QUERY_STRING'] )?'&':'?') . SID;
+			$url = preg_replace('/\/+/', '/', $url);
+			header("Location: https://$url");
+			exit;
+		}
 	}
 
 	$user = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : false;

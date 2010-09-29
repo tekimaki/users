@@ -145,9 +145,12 @@ function users_httpauth ( $pRequireSSL = FALSE ){
 	}
 	// require http auth
 	else{
+		global $gBitSmarty;
+		$gBitSmarty->assign_by_ref('gBitSystem', $gBitSystem);
 		header('WWW-Authenticate: Basic realm="'.$gBitSystem->getConfig('site_title').'"');
 		header('HTTP/1.0 401 Unauthorized');
-		$gBitSystem->fatalError( tra('HTTP Authentication Canceled') );
+		$msg = $gBitSmarty->fetch('bitpackage:themes/httpauth_required.tpl');
+		echo $msg;
 		exit;
 	}
 }

@@ -1,0 +1,228 @@
+---
+users: 
+  version: 2.1.3
+  required: true
+  requirements: 
+    liberty: 
+      min: 2.1.4
+  description: >
+    The users package contains all user
+    information and gives you the possiblity
+    to assign permissions to groups of
+    users.
+  license: 
+    name: LGPL
+    description: Licensed under the GNU LESSER GENERAL PUBLIC LICENSE.
+    url: http://www.gnu.org/copyleft/lesser.html
+  homeable: false
+  tables: 
+    users_users: |
+      
+      user_id I4 PRIMARY,
+      content_id I4,
+      email C(200),
+      login C(40),
+      real_name C(64),
+      user_password C(32),
+      provpass C(32),
+      provpass_expires I8,
+      default_group_id I4,
+      last_login I8,
+      current_login I8,
+      registration_date I8 NOTNULL,
+      challenge C(32),
+      pass_due I8,
+      hash C(32),
+      created I8,
+      avatar_attachment_id I4,
+      portrait_attachment_id I4,
+      logo_attachment_id I4
+      CONSTRAINT	', CONSTRAINT `users_avatar_attach_ref` FOREIGN KEY (`avatar_attachment_id`) REFERENCES `liberty_attachments` (`attachment_id`)
+      , CONSTRAINT `users_content_ref` FOREIGN KEY (`content_id`) REFERENCES `liberty_content` (`content_id`)
+      , CONSTRAINT `users_portrait_attach_ref` FOREIGN KEY (`portrait_attachment_id`) REFERENCES `liberty_attachments` (`attachment_id`)
+      , CONSTRAINT `users_logo_attach_ref` FOREIGN KEY (`logo_attachment_id`) REFERENCES `liberty_attachments` (`attachment_id`)'
+      
+    users_favorites_map: |
+      
+      favorite_content_id I4 PRIMARY,
+      user_id I4 PRIMARY,
+      map_position I4
+      CONSTRAINT ', CONSTRAINT `users_fav_user_ref` FOREIGN KEY (`user_id`) REFERENCES `users_users` (`user_id`)
+      , CONSTRAINT `users_fav_con_ref` FOREIGN KEY (`favorite_content_id`) REFERENCES `liberty_content` (`content_id`)'
+      '
+      
+    users_permissions: |
+      
+      perm_name C(128) PRIMARY,
+      perm_desc C(250),
+      perm_level C(80),
+      package C(100)
+      
+    users_groups: |
+      
+      group_id I4 PRIMARY,
+      user_id I4 NOTNULL,
+      group_name C(30),
+      is_default C(1),
+      group_desc C(255),
+      group_home C(255),
+      is_public C(1),
+      after_registration_page C(255)
+      CONSTRAINT ', CONSTRAINT `users_groups_user_ref` FOREIGN KEY (`user_id`) REFERENCES `users_users` (`user_id`)'
+      
+    users_group_permissions: |
+      
+      group_id I4 PRIMARY,
+      perm_name C(128) PRIMARY,
+      perm_value C(1) default ''
+      CONSTRAINT ', CONSTRAINT `users_group_perm_group_ref` FOREIGN KEY (`group_id`) REFERENCES `users_groups` (`group_id`)
+      , CONSTRAINT `users_group_perm_perm_ref` FOREIGN KEY (`perm_name`) REFERENCES `users_permissions` (`perm_name`)'
+      
+    users_groups_map: |
+      
+      user_id I4 PRIMARY,
+      group_id I4 PRIMARY
+      CONSTRAINT ', CONSTRAINT `users_groups_map_group_ref` FOREIGN KEY (`group_id`) REFERENCES `users_groups` (`group_id`)
+      , CONSTRAINT `users_groups_map_user_ref` FOREIGN KEY (`user_id`) REFERENCES `users_users` (`user_id`)'
+      
+    users_cnxn: |
+      
+      user_id I4,
+      cookie C(64),
+      ip C(39),
+      last_get I8,
+      connect_time I8,
+      get_count I8,
+      user_agent C(128),
+      assume_user_id I4,
+      current_view X
+      CONSTRAINT ', CONSTRAINT `users_cnxn_user_ref` FOREIGN KEY (`user_id`) REFERENCES `users_users` (`user_id`)'
+      
+    users_watches: |
+      
+      user_id I4 PRIMARY,
+      event C(40) PRIMARY,
+      object C(120) PRIMARY,
+      hash C(32),
+      title C(250),
+      watch_type C(200),
+      url C(250),
+      email C(200)
+      CONSTRAINT ', CONSTRAINT `users_watches_user_ref` FOREIGN KEY (`user_id`) REFERENCES `users_users` (`user_id`)'
+      
+  indexes: 
+    users_users_content_id_idx: 
+      table: users_users
+      cols: content_id
+      opts: 
+        - UNIQUE
+    users_users_email_idx: 
+      table: users_users
+      cols: email
+      opts: 
+        - UNIQUE
+    users_users_login_idx: 
+      table: users_users
+      cols: login
+      opts: 
+        - UNIQUE
+    users_users_avatar_atment_idx: 
+      table: users_users
+      cols: avatar_attachment_id
+      opts: 
+    users_groups_user_idx: 
+      table: users_groups
+      cols: user_id
+      opts: 
+    users_groups_user_name_idx: 
+      table: users_groups
+      cols: user_id,group_name
+      opts: 
+        - UNIQUE
+    users_group_perm_group_idx: 
+      table: users_group_permissions
+      cols: group_id
+      opts: 
+    users_group_perm_perm_idx: 
+      table: users_group_permissions
+      cols: perm_name
+      opts: 
+    users_groups_map_user_idx: 
+      table: users_groups_map
+      cols: user_id
+      opts: 
+    users_groups_map_group_idx: 
+      table: users_groups_map
+      cols: group_id
+      opts: 
+    users_fav_con_idx: 
+      table: users_favorites_map
+      cols: favorite_content_id
+      opts: 
+    users_fav_user_idx: 
+      table: users_favorites_map
+      cols: user_id
+      opts: 
+  sequences: 
+    users_users_user_id_seq: 
+      start: 2
+    users_groups_id_seq: 
+      start: 4
+  preferences: 
+    users_ldap_groupattr: cn
+    users_ldap_groupoc: groupOfUniqueNames
+    users_ldap_host: localhost
+    users_ldap_memberattr: uniqueMember
+    users_ldap_port: 389
+    users_ldap_scope: sub
+    users_ldap_userattr: uid
+    users_ldap_useroc: inetOrgPerson
+    users_auth_method: tiki
+    users_auth_skip_admin: y
+    users_allow_register: y
+    users_forgot_pass: y
+    users_pass_due: 999
+    users_remember_me: n
+    users_remember_time: 7200
+    users_userfiles_quota: 30
+    users_uf_use_db: y
+    users_min_pass_length: 4
+    users_preferences: y
+    users_display_name: real_name
+    users_change_language: y
+    users_case_sensitive_login: y
+  permissions: 
+    p_users_assign_group_perms: 
+      description: >
+        Can assign permissions to personal
+        groups
+      level: editors
+    p_users_assign_group_members: 
+      description: Can assign users to personal groups
+      level: registered
+    p_users_group_subgroups: 
+      description: Can include other groups in groups
+      level: editors
+    p_users_admin: 
+      description: Can edit the information for other users
+      level: admin
+    p_users_view_icons_and_tools: 
+      description: Can view tab and tool links
+      level: basic
+    p_users_create_personal_groups: 
+      description: Can create personal user groups
+      level: editors
+    p_users_view_user_list: 
+      description: Can view list of registered users
+      level: registered
+    p_users_view_user_homepage: 
+      description: Can view personalized homepages
+      level: basic
+    p_users_edit_user_homepage: 
+      description: >
+        Can create and display a personalized
+        homepage
+      level: registered
+    p_users_bypass_captcha: 
+      description: Can bypass spam validation mechanisms
+      level: registered

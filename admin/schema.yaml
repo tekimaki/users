@@ -226,3 +226,5 @@ users:
     p_users_bypass_captcha: 
       description: Can bypass spam validation mechanisms
       level: registered
+  contenttypes:
+    BitUser: BitUser.php

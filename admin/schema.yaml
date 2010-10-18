@@ -3,8 +3,10 @@ users:
   version: 2.1.4
   required: true
   requirements: 
+    kernel:
+      min: 2.1.0
     liberty: 
-      min: 2.1.4
+      min: 2.1.7
   description: >
     The users package contains all user
     information and gives you the possiblity

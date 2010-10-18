@@ -1,6 +1,6 @@
 ---
 users: 
-  version: 2.1.3
+  version: 2.1.4
   required: true
   requirements: 
     liberty: 
@@ -226,5 +226,10 @@ users:
     p_users_bypass_captcha: 
       description: Can bypass spam validation mechanisms
       level: registered
+  plugin_apis:
+    function:
+      - user_register
+    tpl:
+      - user_register_inc
   contenttypes:
     BitUser: BitUser.php

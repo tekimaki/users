@@ -39,7 +39,7 @@ users:
       avatar_attachment_id I4,
       portrait_attachment_id I4,
       logo_attachment_id I4
-      CONSTRAINT	', CONSTRAINT `users_avatar_attach_ref` FOREIGN KEY (`avatar_attachment_id`) REFERENCES `liberty_attachments` (`attachment_id`)
+      CONSTRAINT    ', CONSTRAINT `users_avatar_attach_ref` FOREIGN KEY (`avatar_attachment_id`) REFERENCES `liberty_attachments` (`attachment_id`)
       , CONSTRAINT `users_content_ref` FOREIGN KEY (`content_id`) REFERENCES `liberty_content` (`content_id`)
       , CONSTRAINT `users_portrait_attach_ref` FOREIGN KEY (`portrait_attachment_id`) REFERENCES `liberty_attachments` (`attachment_id`)
       , CONSTRAINT `users_logo_attach_ref` FOREIGN KEY (`logo_attachment_id`) REFERENCES `liberty_attachments` (`attachment_id`)'
@@ -235,3 +235,14 @@ users:
       - user_register_inc
   contenttypes:
     BitUser: BitUser.php
+  plugins:
+    user_favorites:
+      name: User Favorite Bookmarking
+      handler_file: BitUser.php
+      description: Provides a ajax service enabling users to bookmark any content as a favorite.
+        tpl:
+          content_icon: 'bitpackage:users/user_favs_service_icon_inc.tpl'
+        sql:
+          content_list_sql: users_favs_content_list_sql
+        function:
+          upload_expunge_attachment: users_expunge_attachment

@@ -15,6 +15,7 @@ $gBitSystem->registerPackage( $registerHash );
 
 /* ---- services ----- */
 define( 'CONTENT_SERVICE_USERS_FAVS', 'users_favorites' );
+/*
 $gLibertySystem->registerService( CONTENT_SERVICE_USERS_FAVS, 
 	USERS_PKG_NAME, 
 	array(
@@ -26,6 +27,7 @@ $gLibertySystem->registerService( CONTENT_SERVICE_USERS_FAVS,
 		'description' => tra( 'Provides a ajax service enabling users to bookmark any content as a favorite.' ),
 	)
 );
+*/
 
 $gBitSystem->registerNotifyEvent( array( "user_registers" => tra( "A user registers" )));
 

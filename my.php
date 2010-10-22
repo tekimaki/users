@@ -45,6 +45,7 @@ if( $gBitSystem->isFeatureActive( 'display_users_content_list' ) ) {
 	$_REQUEST['user_id'] = $gBitUser->mUserId;
 
 	// now that we have all the offsets, we can get the content list
+	$cListRequest = $_REQUEST;
 	include_once( LIBERTY_PKG_PATH.'get_content_list_inc.php' );
 
 	// calculate page number

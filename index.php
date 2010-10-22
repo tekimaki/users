@@ -67,6 +67,7 @@ if( !empty( $_REQUEST['home'] ) && $gQueryUser->isValid() && (( $gBitUser->hasPe
 		$gBitSmarty->assign( 'user_id', $gQueryUserId);
 
 		// now that we have all the offsets, we can get the content list
+		$cListRequest = $_REQUEST;
 		include_once( LIBERTY_PKG_PATH.'get_content_list_inc.php' );
 
 		//$gBitSmarty->assign_by_ref('offset', $offset);

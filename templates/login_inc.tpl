@@ -5,7 +5,7 @@
 		{formfeedback error="$error"}
 		{formlabel label="Username or Email" for="user"}
 		{forminput}
-			<input type="text" name="user" id="user" size="25" />
+			<input class="textInput small" type="text" name="user" id="user" size="25" />
 			{formhelp note=""}
 		{/forminput}
 	</div>
@@ -13,7 +13,7 @@
 	<div class="row">
 		{formlabel label="Password" for="pass"}
 		{forminput}
-			<input type="password" name="pass" id="pass" size="25" />
+			<input class="textInput small" type="password" name="pass" id="pass" size="25" />
 		{/forminput}
 	</div>
 
@@ -50,8 +50,8 @@
 		<input type="hidden" name="stay_in_ssl_mode" value="on" />
 	{/if}
 
-	<div class="row submit">
-		<input type="submit" name="login" value="{tr}Log in to {$gBitSystem->getConfig('site_title')|default:"this site"}{/tr}" />
+	<div class="buttonHolder row submit">
+		<input class="button" type="submit" name="login" value="{tr}Log in to {$gBitSystem->getConfig('site_title')|default:"this site"}{/tr}" />
 		{if $gBitSystem->isFeatureActive('site_https_login_required') || $smarty.server.HTTPS=='on'}
 			{biticon iname="emblem-readonly" ipackage="icons" iexplain="Secure Login"}
 		{/if}

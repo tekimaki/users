@@ -13,6 +13,20 @@
  * @subpackage functions
  */
 
+/**
+ * $Readme$
+ *
+ * Logout and http_auth
+ * If using bitweaver's built in http_auth to protect areas of the site 
+ * once logged in using http_auth it is technically impossible to logout.
+ * Browsers cache the http_auth user/pass values, so even if the user
+ * hits this path, the cached http_auth will log them back in immediately
+ * If the user clears the http_auth cache from their browser then they
+ * can not see the site, which is the indended performace again.
+ *
+ * It is common that non-technical people will not at first understand
+ * this intended effect. You can use this note to explain it to them. 
+ */
 $bypass_siteclose_check = 'y';
 
 /**

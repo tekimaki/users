@@ -28,7 +28,18 @@ if( !empty( $_REQUEST['returnto'] ) ) {
 }
 
 if( $gBitUser->isRegistered() ) {
-	header( 'Location: '.$gBitSystem->getConfig( 'users_login_homepage', USERS_PKG_URL.'my.php' ) );
+	// if group home is set for this user we get that
+	if( method_exists( $gBitUser, 'getGroupHome' ) && 
+		(( @$gBitUser->verifyId( $gBitUser->mInfo['default_group_id'] ) && ( $group_home = $gBitUser->getGroupHome( $gBitUser->mInfo['default_group_id'] ) ) ) ||
+		( $gBitSystem->getConfig( 'default_home_group' ) && ( $group_home = $gBitUser->getGroupHome( $gBitSystem->getConfig( 'default_home_group' ) ) ) )) ){
+		$indexType = 'group_home';
+
+		header( 'Location: '.$gBitSystem->getIndexPage( $indexType ) );
+	}
+	// else global defaults
+	else{
+		header( 'Location: '.$gBitSystem->getConfig( 'users_login_homepage', USERS_PKG_URL.'my.php' ) );
+	}
 	die;
 }
 

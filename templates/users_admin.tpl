@@ -100,7 +100,7 @@
 
 					{*include file="bitpackage:liberty/edit_services_inc.tpl" serviceFile="content_edit_mini_tpl"*}
 
-					<div class="row submit">
+					<div class="buttonHolder row submit">
 						<input type="submit" name="newuser" value="{tr}Add User{/tr}"{if $defaultGroupId eq ''} disabled="disabled"{/if} />
 					</div>
 				{/form}

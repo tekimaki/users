@@ -30,7 +30,7 @@
 					{/forminput}
 				</div>
 
-				<div class="row submit">
+				<div class="buttonHolder row submit">
 					<input type="submit" name="register" value="{tr}register{/tr}" />
 				</div>
 			{elseif $showmsg ne 'y'}
@@ -243,7 +243,7 @@
 					{include file=$package.template }
 				{/foreach}
 
-				<div class="row submit">
+				<div class="buttonHolder row submit">
 					<input type="submit" name="register" value="{tr}Register{/tr}" />
 				</div>
 

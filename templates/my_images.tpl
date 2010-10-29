@@ -69,7 +69,7 @@
 				{/forminput}
 			</div>
 
-			<div class="row submit">
+			<div class="buttonHolder row submit">
 				<input type="submit" name="store" value="{tr}Save Changes{/tr}" />
 			</div>
 		{/form}

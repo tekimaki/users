@@ -28,7 +28,7 @@
 					{/forminput}
 				</div>
 
-				<div class="row submit">
+				<div class="buttonHolder row submit">
 					<input type="submit" name="fResetCSS" id="reset" value="Reset CSS File" onclick="return confirm('{tr}Are you sure you want to reset your CSS back to the defaults? Any changes you have made will be lost.{/tr}');" />
 				</div>
 
@@ -36,7 +36,7 @@
 					<textarea name="textData" rows="42" cols="50">{$data|escape}</textarea>
 				</div>
 
-				<div class="row submit">
+				<div class="buttonHolder row submit">
 					<input type="submit" name="fSaveCSS" value="Save" />
 					<input type="submit" name="fCancelCSS" value="Cancel" />
 				</div>
@@ -53,7 +53,7 @@
 						{/forminput}
 					</div>
 
-					<div class="row submit">
+					<div class="buttonHolder row submit">
 						<input type="submit" value="Upload Image" name="fUpload" id="upload" />
 					</div>
 				{/legend}

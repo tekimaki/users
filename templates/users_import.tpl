@@ -77,7 +77,7 @@
 						{/forminput}
 					</div>
 
-					<div class="row submit">
+					<div class="buttonHolder row submit">
 						<input type="submit" name="batchimport" value="{tr}Import{/tr}" />
 					</div>
 				{/form}

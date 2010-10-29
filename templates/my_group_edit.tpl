@@ -49,7 +49,7 @@
 						</div>
 					{/if}
 
-					<div class="row submit">
+					<div class="buttonHolder row submit">
 						<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />&nbsp;
 						<input type="submit" name="save" value="{tr}Save Group{/tr}" />
 					</div>
@@ -77,7 +77,7 @@
 								{/forminput}
 							</div>
 								
-							<div class="row submit">
+							<div class="buttonHolder row submit">
 								<input type="submit" name="submitUserSearch" value="Search"/>
 							</div>
 						{/form}
@@ -170,7 +170,7 @@
 								</table>
 							</div>
 
-							<div class="row submit">
+							<div class="buttonHolder row submit">
 								<input type="submit" name="updateperms" value="{tr}Update{/tr}" />
 							</div>
 						{/form}

@@ -54,7 +54,7 @@
 	</div>
 
 
-	<div class="row submit">
+	<div class="buttonHolder row submit">
 		<input type="submit" name="features" value="{tr}Change preferences{/tr}" />
 	</div>
 {/form}

@@ -86,7 +86,7 @@
 						{/forminput}
 					</div>
 
-					<div class="row submit">
+					<div class="buttonHolder row submit">
 						<input type="submit" name="cancel" value="{tr}Cancel{/tr}" />&nbsp;
 						<input type="submit" name="save" value="{tr}Save Group{/tr}" />
 					</div>
@@ -133,7 +133,7 @@
 							</table>
 						</div>
 
-						<div class="row submit">
+						<div class="buttonHolder row submit">
 							<input type="submit" name="updateperms" value="{tr}Update{/tr}" />
 						</div>
 					{/form}

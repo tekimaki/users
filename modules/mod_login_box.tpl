@@ -43,7 +43,7 @@
 				<input type="hidden" name="stay_in_ssl_mode" value="on" />
 			{/if}
 
-			<div class="row submit">
+			<div class="buttonHolder row submit">
 				<input type="submit" name="login" value="{tr}Log in{/tr}" />
 			</div>
 

@@ -156,7 +156,7 @@
 							{/forminput}
 						</div>
 
-						<div class="row submit">
+						<div class="buttonHolder row submit">
 							<input type="submit" name="prefs" value="{tr}Change preferences{/tr}" />
 						</div>
 					{/legend}
@@ -181,7 +181,7 @@
 						{/forminput}
 					</div>
 
-					<div class="row submit">
+					<div class="buttonHolder row submit">
 						<input type="submit" name="chgemail" value="{tr}Change email{/tr}" />
 					</div>
 				{/form}
@@ -219,7 +219,7 @@
 						{/forminput}
 					</div>
 
-					<div class="row submit">
+					<div class="buttonHolder row submit">
 						<input type="submit" name="chgpswd" value="{tr}Change Password{/tr}" />
 					</div>
 				{/form}
@@ -252,7 +252,7 @@
 							{/forminput}
 						</div>
 
-						<div class="row submit">
+						<div class="buttonHolder row submit">
 							<input type="submit" name="tasksprefs" value="{tr}Change preferences{/tr}" />
 						</div>
 					{/form}

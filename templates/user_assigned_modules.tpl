@@ -98,7 +98,7 @@
 							{/forminput}
 						</div>
 
-						<div class="row submit">
+						<div class="buttonHolder row submit">
 							<input type="submit" name="fSubmitAssign" value="{tr}Add Module{/tr}" />
 						</div>
 					{/form}
@@ -141,7 +141,7 @@
 							{/forminput}
 						</div>
 
-						<div class="row submit">
+						<div class="buttonHolder row submit">
 							<input type="submit" name="fSubmitAssign" value="{tr}Add Module{/tr}" />
 						</div>
 					{/form}
@@ -167,7 +167,7 @@
 							{/forminput}
 						</div>
 
-					<div class="row submit">
+					<div class="buttonHolder row submit">
 						<input type="submit" value="{tr}Apply Theme{/tr}" name="fSubmitSetTheme">
 					</div>
 					{/form}

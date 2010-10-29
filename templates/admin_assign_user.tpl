@@ -70,7 +70,7 @@
 				{/forminput}
 			</div>
 
-			<div class="row submit">
+			<div class="buttonHolder row submit">
 				<input type="submit" value="{tr}set{/tr}" name="set_default" />
 			</div>
 		{/form}

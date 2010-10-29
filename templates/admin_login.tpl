@@ -106,7 +106,7 @@
 				{/forminput}
 			</div>
 
-			<div class="row submit">
+			<div class="buttonHolder row submit">
 				<input type="submit" name="loginprefs" value="{tr}Change preferences{/tr}" />
 			</div>
 		{/form}
@@ -132,7 +132,7 @@
 				</div>
 			{/foreach}
 
-			<div class="row submit">
+			<div class="buttonHolder row submit">
 				<input type="submit" name="registerprefs" value="{tr}Change preferences{/tr}" />
 			</div>
 		{/form}
@@ -158,7 +158,7 @@
 				</div>
 			{/foreach}
 
-			<div class="row submit">
+			<div class="buttonHolder row submit">
 				<input type="submit" name="httpprefs" value="{tr}Change preferences{/tr}" />
 			</div>
 		{/form}
@@ -187,7 +187,7 @@
 							{/forminput}
 						</div>
 					{/foreach}
-					<div class="row submit">
+					<div class="buttonHolder row submit">
 						<input type="submit" name="auth_{$meth_name}" value="{tr}Change {$method.name} preferences{/tr}" />
 					</div>
 				{/form}

@@ -3,7 +3,7 @@
  * @version $Header$
  * @package users
  */
-global $gBitDbType, $gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbName, $gBitThemes;
+global $gBitDbType, $gBitDbHost, $gBitDbUser, $gBitDbPassword, $gBitDbName, $gBitThemes, $gBitSystem;
 
 $registerHash = array(
 	'package_name' => 'users',

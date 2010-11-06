@@ -107,7 +107,10 @@ class BitUser extends LibertyMime {
 			if( $pFull ) {
 				$fullSelect = ' , lc.* ';
 				$fullJoin = " LEFT OUTER JOIN `".BIT_DB_PREFIX."liberty_content` lc ON ( uu.`content_id`=lc.`content_id` )";
-				$this->getServicesSql( 'content_load_sql_function', $fullSelect, $fullJoin, $whereSql, $bindVars );
+				// Don't use services in the installer
+				if (!defined('BIT_INSTALL')) {
+					$this->getServicesSql( 'content_load_sql_function', $fullSelect, $fullJoin, $whereSql, $bindVars );
+				}
 			}
 			// uu.`user_id` AS `uu_user_id` is last and aliases to avoid possible column name collisions
 			$query = "

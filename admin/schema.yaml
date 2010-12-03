@@ -230,7 +230,7 @@ users:
       level: registered
   plugin_apis:
     function:
-      - user_register
+      - users_register
     tpl:
       - user_register_inc
   contenttypes:

@@ -598,7 +598,7 @@ class BitUser extends LibertyMime {
 	 * @return TRUE on success, FALSE on failure
 	 */
 	function register( &$pParamHash, $pNotifyRegistrant=TRUE ) {
-		global $notificationlib, $gBitSmarty, $gBitSystem, $gBitUser, $gSwitchboardSystem;
+		global $notificationlib, $gBitSmarty, $gBitSystem, $gBitUser, $gSwitchboardSystem, $gAccount;
 		$ret = FALSE;
 		if( !empty( $_FILES['user_portrait_file'] ) && empty( $_FILES['user_avatar_file'] ) ) {
 			$pParamHash['user_auto_avatar'] = TRUE;
@@ -649,9 +649,9 @@ class BitUser extends LibertyMime {
 
 			// Send notification
 			if( $pNotifyRegistrant ) {
-				$siteName = $gBitSystem->getConfig('site_title', $_SERVER['HTTP_HOST'] );
-				$gBitSmarty->assign( 'siteName',$_SERVER["SERVER_NAME"] );
-				$gBitSmarty->assign( 'mail_site',$_SERVER["SERVER_NAME"] );
+				$siteName = $gAccount->getTitle();
+				$gBitSmarty->assign( 'siteName',$siteName );
+				$gBitSmarty->assign( 'mail_site',$siteName );
 				$gBitSmarty->assign( 'mail_user',$pParamHash['login'] );
 				if( $gBitSystem->isFeatureActive( 'users_validate_user' ) ) {
 					// $apass = addslashes(substr(md5($gBitSystem->genPass()),0,25));
@@ -686,10 +686,10 @@ class BitUser extends LibertyMime {
 					// Send the welcome mail
 					$gBitSmarty->assign( 'mailPassword',$pParamHash['password'] );
 					$gBitSmarty->assign( 'mailEmail',$pParamHash['email'] );
+					$gBitSmarty->assign('reg',true);
 					$mail_data = $gBitSmarty->fetch( 'bitpackage:users/welcome_mail.tpl' );
 
 					$msg = array();
-
 					//email welcome info to new user
 					$recipients = array( array( 'email' => $pParamHash["email"] ), );
 					$msg['recipients'] = $recipients;

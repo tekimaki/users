@@ -495,6 +495,29 @@ class BitPermUser extends BitUser {
 			return $ret;
 		}
 	}
+	
+	/**
+	 * getGroupInfoByGroupName 
+	 * 
+	 * @param array $pGroupName 
+	 * @access public
+	 * @return group information
+	 */
+	function getGroupInfoByGroupName( $pGroupName ) {
+		$sql = "SELECT * FROM `".BIT_DB_PREFIX."users_groups` WHERE `group_name` = ?";
+		$ret = $this->mDb->getRow( $sql, array( $pGroupName ));
+
+		$listHash = array(
+			'group_id' => $ret['group_id'],
+			'sort_mode' => 'up.perm_name_asc',
+		);
+		$ret["perms"] = $this->getGroupPermissions( $listHash );
+
+		$sql = "SELECT COUNT(*) FROM `".BIT_DB_PREFIX."users_groups_map` WHERE `group_id` = ?";
+		$ret['num_members'] = $this->mDb->getOne( $sql, array( $ret['group_id'] ));
+
+		return $ret;
+	}
 
 	/**
 	 * addUserToGroup Adds user pUserId to group(s) pGroupMixed.

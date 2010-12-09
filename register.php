@@ -48,8 +48,8 @@ if( isset( $_REQUEST["register"] ) ) {
 		$gBitUser->mUserId = $newUser->mUserId;
 
 		// add user to user-selected group
-		if ( !empty( $_REQUEST['group'] ) ) {
-			$groupInfo = $gBitUser->getGroupInfoByGroupName( $_REQUEST['group'] );
+		if ( !empty( $reg['group'] ) ) {
+			$groupInfo = $gBitUser->getGroupInfoByGroupName( $reg['group'] );
 			if ( empty($groupInfo) || $groupInfo['is_public'] != 'y' ) {
 				$errors[] = "You can't use this group";
 				$gBitSmarty->assign_by_ref( 'errors', $errors );

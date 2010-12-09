@@ -598,7 +598,7 @@ class BitUser extends LibertyMime {
 	 * @return TRUE on success, FALSE on failure
 	 */
 	function register( &$pParamHash, $pNotifyRegistrant=TRUE ) {
-		global $notificationlib, $gBitSmarty, $gBitSystem, $gBitUser, $gSwitchboardSystem, $gAccount;
+		global $notificationlib, $gBitSmarty, $gBitSystem, $gBitUser, $gSwitchboardSystem;
 		$ret = FALSE;
 		if( !empty( $_FILES['user_portrait_file'] ) && empty( $_FILES['user_avatar_file'] ) ) {
 			$pParamHash['user_auto_avatar'] = TRUE;
@@ -649,7 +649,7 @@ class BitUser extends LibertyMime {
 
 			// Send notification
 			if( $pNotifyRegistrant ) {
-				$siteName = $gAccount->getTitle();
+				$siteName = $gBitSystem->getConfig('site_title', $_SERVER['HTTP_HOST'] );
 				$gBitSmarty->assign( 'siteName',$siteName );
 				$gBitSmarty->assign( 'mail_site',$siteName );
 				$gBitSmarty->assign( 'mail_user',$pParamHash['login'] );

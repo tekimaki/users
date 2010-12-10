@@ -1287,7 +1287,7 @@ class BitUser extends LibertyMime {
 			} elseif( $userInfo['user_id'] != ANONYMOUS_USER_ID ) {
 				// User is valid and not due to change pass..
 				$this->mUserId = $userInfo['user_id'];
-				$this->load();
+				$this->load( TRUE );
 				$this->loadPermissions( TRUE );
 
 				// set post-login url

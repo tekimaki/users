@@ -48,15 +48,15 @@ if( isset( $_REQUEST["register"] ) ) {
 		$gBitUser->mUserId = $newUser->mUserId;
 
 		// add user to user-selected group
-		if ( !empty( $_REQUEST['group'] ) ) {
-			$groupInfo = $gBitUser->getGroupInfo( $_REQUEST['group'] );
+		if ( !empty( $reg['group'] ) ) {
+			$groupInfo = $gBitUser->getGroupInfoByGroupName( $reg['group'] );
 			if ( empty($groupInfo) || $groupInfo['is_public'] != 'y' ) {
 				$errors[] = "You can't use this group";
 				$gBitSmarty->assign_by_ref( 'errors', $errors );
 			} else {
 				$userId = $newUser->getUserId();
-				$gBitUser->addUserToGroup( $userId, $_REQUEST['group'] );
-				$gBitUser->storeUserDefaultGroup( $userId, $_REQUEST['group'] );
+				$gBitUser->addUserToGroup( $userId, $groupInfo['group_id'] );
+				$gBitUser->storeUserDefaultGroup( $userId, $groupInfo['group_id'] );
 			}
 		}
 
@@ -64,7 +64,7 @@ if( isset( $_REQUEST["register"] ) ) {
 		if(!empty($_REQUEST['users_information']) && $_REQUEST['users_information'] == 'private'){
 			$newUser->storePreference('users_information','private');
 		}
-
+		
 		// requires validation by email 
 		if( $gBitSystem->isFeatureActive( 'users_validate_user' ) ) {
 			$gBitSmarty->assign('msg',tra('You will receive an email with information to login for the first time into this site'));
@@ -92,6 +92,8 @@ if( isset( $_REQUEST["register"] ) ) {
 				} else {
 					$url = $groupInfo['after_registration_page'];
 				}
+			}else{
+				$url = USERS_PKG_URI."thankyou.php";
 			}
 			header( 'Location: '.$url );
 			exit;

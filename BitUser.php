@@ -623,6 +623,10 @@ class BitUser extends LibertyMime {
 			if( !empty( $pParamHash['verified_email'] ) && $pParamHash['verified_email'] && $gBitSystem->getConfig('users_validate_email_group') ) {
 				BitPermUser::addUserToGroup( $this->mUserId, $gBitSystem->getConfig('users_validate_email_group') );
 			}
+			
+			if( $provisionalUser = $this->getUserPreference( 'provisional_user', FALSE, $this->mUserId ) ){
+				$this->storePreference( 'provisional_user', FALSE );
+			}
 
 			$this->mLogs['register'] = 'New user registered.';
 			$ret = TRUE;

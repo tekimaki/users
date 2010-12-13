@@ -283,6 +283,7 @@ class BitUser extends LibertyMime {
 			}
 			if( $provisionalUser ){
 				$this->mUserId = $existingUserInfo['user_id'];
+				$this->mContentId = $pParamHash['content_id'] = $existingUserInfo['content_id'];
 			}elseif( $emailResult = $this->verifyEmail( $pParamHash['email'] , $this->mErrors) ) {
 				$pParamHash['verified_email'] = ($emailResult === true);
 			}

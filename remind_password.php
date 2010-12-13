@@ -31,8 +31,9 @@ if( $gBitUser->isRegistered() ) {
     if ( strlen ( $pLogin ) ) {
 		$loginCol = strpos( $pLogin, '@' ) ? 'email' : 'login';
 		$userInfo = $gBitUser->getUserInfo( array( $loginCol => $pLogin ) );
+		$provisionalUser = $gBitUser->getUserPreference( 'provisional_user', FALSE, $userInfo['user_id'] );
 	}
-	if( $userInfo ) {
+	if( $userInfo && !$provisionalUser ) {
 		if ( $gBitSystem->isFeatureActive( 'users_clear_passwords' ) && !empty($userInfo['user_password']) ) {
 			$gBitSmarty->assign( 'userPass', $userInfo['user_password'] );
 			$tmp['success'] = tra("A password reminder email has been sent ");

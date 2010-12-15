@@ -8,7 +8,7 @@ require_once( '../../kernel/setup_inc.php' );
 
 
 
-// $gBitSystem->verifyPermission( 'p_users_admin' );
+$gBitSystem->verifyPermission( 'p_users_admin' );
 
 $feedback = array();
 

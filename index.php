@@ -96,7 +96,7 @@ if( !empty( $_REQUEST['home'] ) && $gQueryUser->isValid() && (( $gBitUser->hasPe
 	$centerDisplay = ( count( $gCenterPieces ) ? 'bitpackage:kernel/dynamic.tpl' : 'bitpackage:users/center_user_wiki_page.tpl' );
 
 } else {
-	$gBitSystem->verifyPermission( 'p_users_view_user_list' );
+	$gQueryUser->verifyUserPermission( 'p_users_view_user_list' );
 	$gQueryUser->getList( $_REQUEST );
 	$gBitSmarty->assign_by_ref( 'users', $_REQUEST["data"] );
 	$gBitSmarty->assign_by_ref( 'usercount', $_REQUEST["cant"] );

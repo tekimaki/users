@@ -94,7 +94,6 @@ if( isset( $_REQUEST["action"] ) ) {
 		}
 	} elseif( $_REQUEST["action"] == 'delete' ||  $_REQUEST["action"] == 'ban' ||  $_REQUEST["action"] == 'unban'  ) {
 		$formHash['user_id'] = $_REQUEST['user_id'];
-		// $userInfo = $gBitUser->getUserInfo( array( 'user_id' => $_REQUEST["user_id"] ) );
 		$userClass = $gBitSystem->getConfig( 'user_class', 'BitPermUser' );
 		$reqUser = new $userClass( $_REQUEST["user_id"] );
 		$reqUser->load();
@@ -143,6 +142,8 @@ if( isset( $_REQUEST["action"] ) ) {
 						$msgHash = array(
 							'confirm_item' => tra( 'Are you sure you want to ban this user?' ),
 							'warning' => tra( 'This will suspend the account for user' )." <strong>$userInfo[real_name] ($userInfo[login])</strong>",
+							'title' => tra( 'Ban User Confirmation' ),
+							'submit_label' => tra( 'Ban' ),
 						);
 						break;
 					case 'unban':

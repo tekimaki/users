@@ -676,24 +676,33 @@ class BitPermUser extends BitUser {
 	 */
 	function loadPermissions( $pForceReload=FALSE ) {
 		if( $this->isValid() && (empty( $this->mPerms ) || $pForceReload) ) {
-			$this->mPerms = array();
-			// the double up.`perm_name` is intentional - the first is for hash key, the second is for hash value
-			$query = "
-				SELECT up.`perm_name` AS `hash_key`, up.`perm_name`, up.`perm_desc`, up.`perm_level`, up.`package`
-				FROM `".BIT_DB_PREFIX."users_permissions` up
-					INNER JOIN `".BIT_DB_PREFIX."users_group_permissions` ugp ON ( ugp.`perm_name`=up.`perm_name` )
-					INNER JOIN `".BIT_DB_PREFIX."users_groups` ug ON ( ug.`group_id`=ugp.`group_id` )
-					LEFT OUTER JOIN `".BIT_DB_PREFIX."users_groups_map` ugm ON ( ugm.`group_id`=ugp.`group_id` AND ugm.`user_id` = ? )
-				WHERE ug.`group_id`= ".ANONYMOUS_GROUP_ID." OR ugm.`group_id`=ug.`group_id`";
-			$this->mPerms = $this->mDb->getAssoc( $query, array( $this->mUserId ));
-			// Add in override permissions
-			if( !empty( $this->mPermsOverride ) ) {
-				foreach( $this->mPermsOverride as $key => $val ) {
-					$this->mPerms[$key] = $val;
-				}
-			}
+			$this->mPerms = $this->getDefaultPermissions();
 		}
 		return( count( $this->mPerms ) );
+	}
+
+	function getDefaultPermissions(){ 
+		// the double up.`perm_name` is intentional - the first is for hash key, the second is for hash value
+		$query = "
+			SELECT up.`perm_name` AS `hash_key`, up.`perm_name`, up.`perm_desc`, up.`perm_level`, up.`package`
+			FROM `".BIT_DB_PREFIX."users_permissions` up
+				INNER JOIN `".BIT_DB_PREFIX."users_group_permissions` ugp ON ( ugp.`perm_name`=up.`perm_name` )
+				INNER JOIN `".BIT_DB_PREFIX."users_groups` ug ON ( ug.`group_id`=ugp.`group_id` )
+				LEFT OUTER JOIN `".BIT_DB_PREFIX."users_groups_map` ugm ON ( ugm.`group_id`=ugp.`group_id` AND ugm.`user_id` = ? )
+			WHERE ug.`group_id`= ".ANONYMOUS_GROUP_ID." OR ugm.`group_id`=ug.`group_id`";
+		$ret  = $this->mDb->getAssoc( $query, array( $this->mUserId ));
+
+		// Add in override permissions
+		if( !empty( $this->mPermsOverride ) ) {
+			foreach( $this->mPermsOverride as $key => $val ) {
+				$ret[$key] = $val;
+			}
+		}
+
+		$permsAPIHash = array( 'user_permissions' => TRUE ); // specify to append perns to the user permissions hash
+		$permsAPIHash['perms'] = &$ret;
+		$this->invokeServices( 'content_user_perms_function', $permsAPIHash );
+		return $ret;
 	}
 
 	/**

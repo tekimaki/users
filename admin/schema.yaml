@@ -1,6 +1,6 @@
 ---
 users: 
-  version: 2.1.4
+  version: 2.1.5
   required: true
   requirements: 
     kernel:
@@ -205,9 +205,6 @@ users:
     p_users_group_subgroups: 
       description: Can include other groups in groups
       level: editors
-    p_users_admin: 
-      description: Can edit the information for other users
-      level: admin
     p_users_view_icons_and_tools: 
       description: Can view tab and tool links
       level: basic
@@ -228,6 +225,21 @@ users:
     p_users_bypass_captcha: 
       description: Can bypass spam validation mechanisms
       level: registered
+    p_users_create:
+      description:  Can create a users
+      level: editors
+    p_users_view:
+      description:  Can view users
+      level: basic
+    p_users_update:
+      description: Can update any users
+      level: editors
+    p_users_expunge:
+      description: Can delete any users
+      level: admin
+    p_users_admin:
+      description: Can admin any users
+      level: admin
   plugin_apis:
     function:
       - users_register

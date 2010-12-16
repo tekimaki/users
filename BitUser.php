@@ -77,6 +77,12 @@ class BitUser extends LibertyMime {
 		);
 		$this->mUserId = ( @$this->verifyId( $pUserId ) ? $pUserId : NULL);
 		$this->mContentId = $pContentId;
+
+        // Permission setup
+        $this->mViewContentPerm  = 'p_users_view';
+        $this->mCreateContentPerm  = 'p_users_create';
+        $this->mUpdateContentPerm  = 'p_users_update';
+        $this->mAdminContentPerm = 'p_users_admin';
 	}
 
 	/**

@@ -94,12 +94,17 @@ if( isset( $_REQUEST["action"] ) ) {
 		}
 	} elseif( $_REQUEST["action"] == 'delete' ||  $_REQUEST["action"] == 'ban' ||  $_REQUEST["action"] == 'unban'  ) {
 		$formHash['user_id'] = $_REQUEST['user_id'];
-		$userInfo = $gBitUser->getUserInfo( array( 'user_id' => $_REQUEST["user_id"] ) );
-		if( !empty( $userInfo['user_id'] ) ) {
+		// $userInfo = $gBitUser->getUserInfo( array( 'user_id' => $_REQUEST["user_id"] ) );
+		$userClass = $gBitSystem->getConfig( 'user_class', 'BitPermUser' );
+		$reqUser = new $userClass( $_REQUEST["user_id"] );
+		$reqUser->load();
+		if( $reqUser->isValid() ){
+			$reqUser->verifyAdminPermission();
+
+			$userInfo = $reqUser->mInfo;
+
 			if( isset( $_REQUEST["confirm"] ) ) {
 				$gBitUser->verifyTicket();
-				$userClass = $gBitSystem->getConfig( 'user_class', 'BitPermUser' );
-				$reqUser = new $userClass( $_REQUEST["user_id"] );
 				switch(  $_REQUEST["action"] ){
 					case 'delete':
 						$reqUser->mDb->StartTrans();

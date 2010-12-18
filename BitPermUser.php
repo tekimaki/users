@@ -140,7 +140,14 @@ class BitPermUser extends BitUser {
 					$this->addUserToGroup( $this->mUserId, $groupParams['group_id'] );
 				}
 			}
-			$this->load( TRUE );
+
+			// if a new user it is being registered 
+			// register services having been processed yet
+			// this can lead to incomplete data or in-advertant security restrictions
+			// register will load
+			if( !$newUser ){
+				$this->load( TRUE );
+			}
 
 			// store any uploaded images, this can stuff mErrors, so we want to do this as the very last thing.
 			$pParamHash['upload']['thumbnail'] = FALSE;   // i don't think this does anything - perhaps replace it by setting thumbnail_sizes

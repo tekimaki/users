@@ -766,6 +766,7 @@ class BitUser extends LibertyMime {
 	 */
 	function store( &$pParamHash ) {
 		if( $this->verify( $pParamHash ) ) {
+			$newUser = !$this->isRegistered();
 			$this->mDb->StartTrans();
 			$pParamHash['content_type_guid'] = BITUSER_CONTENT_TYPE_GUID;
 
@@ -797,7 +798,13 @@ class BitUser extends LibertyMime {
 
 			$this->mDb->CompleteTrans();
 
-			$this->load( TRUE );
+			// if a new user it is being registered 
+			// register services having been processed yet
+			// this can lead to incomplete data or in-advertant security restrictions
+			// register will load
+			if( !$newUser ){
+				$this->load( TRUE );
+			}
 		}
 		return( count( $this->mErrors ) == 0 );
 	}

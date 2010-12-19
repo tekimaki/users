@@ -242,40 +242,16 @@ class BitUser extends LibertyMime {
 
 		trim_array( $pParamHash );
 
+		// matching provisional user
+		$provisionalUser = FALSE;
+		$existingUserInfo = array();
+		
 		// DO NOT REMOVE - to allow specific setting of the user_id during the first store.
 		// used by ROOT_USER_ID or ANONYMOUS_USER_ID during install.
 		if( @$this->verifyId( $pParamHash['user_id'] ) ) {
 			$pParamHash['user_store']['user_id'] = $pParamHash['user_id'];
 		}
-		// require login
-		if( !empty( $pParamHash['login'] ) ) {
-			if( $this->userExists( array( 'login' => $pParamHash['login'] ) ) ) {
-				$this->mErrors['login'] = 'The username "'.$pParamHash['login'].'" is already in use';
-			} elseif( preg_match( '/[^A-Za-z0-9_.-]/', $pParamHash["login"] ) ) {
-				$this->mErrors['login'] = tra( "Your username can only contain numbers, characters, underscores and hyphens." );
-			} else {
-				// LOWER CASE all logins
-				$pParamHash['login'] = strtolower( $pParamHash['login'] );
-				$pParamHash['user_store']['login'] = $pParamHash['login'];
-			}
-		}
-		// some people really like using first and last names 
-		// push them into real_name
-		if( !empty( $pParamHash['first_name'] ) ) {
-			$pParamHash['real_name'] = $pParamHash['first_name'];
-		}
-		if( !empty( $pParamHash['last_name'] ) ) {
-			$pParamHash['real_name'] = !empty( $pParamHash['real_name'] )?$pParamHash['real_name']." ":'';
-			$pParamHash['real_name'] .= $pParamHash['last_name'];
-		}
-		// real_name
-		if( !empty( $pParamHash['real_name'] ) ) {
-			$pParamHash['user_store']['real_name'] = substr( $pParamHash['real_name'], 0, 64 );
-		}
 
-		//moved up :: variable is used outside of next if statement
-		$provisionalUser = FALSE;
-		
 		// require email
 		if( !empty( $pParamHash['email'] ) ) {
 			// LOWER CASE all emails
@@ -294,6 +270,40 @@ class BitUser extends LibertyMime {
 				$pParamHash['verified_email'] = ($emailResult === true);
 			}
 		}
+
+		// require login
+		if( !empty( $pParamHash['login'] ) ) {
+			if( preg_match( '/[^A-Za-z0-9_.-]/', $pParamHash["login"] ) ) {
+				$this->mErrors['login'] = tra( "Your username can only contain numbers, characters, underscores and hyphens." );
+			} else {
+				// LOWER CASE all logins
+				$pParamHash['login'] = strtolower( $pParamHash['login'] );
+				$pParamHash['user_store']['login'] = $pParamHash['login'];
+				// check if login is already in use
+				if( $this->userExists( array( 'login' => $pParamHash['login'] ) ) && 
+					// provisional user can match login 
+					( !$provisionalUser || 
+					  ( !empty( $existingUserInfo['login'] ) && $existingUserInfo['login'] != $pParamHash['login'] ) 
+					)
+				){
+					$this->mErrors['login'] = 'The username "'.$pParamHash['login'].'" is already in use';
+				}
+			}
+		}
+		// some people really like using first and last names 
+		// push them into real_name
+		if( !empty( $pParamHash['first_name'] ) ) {
+			$pParamHash['real_name'] = $pParamHash['first_name'];
+		}
+		if( !empty( $pParamHash['last_name'] ) ) {
+			$pParamHash['real_name'] = !empty( $pParamHash['real_name'] )?$pParamHash['real_name']." ":'';
+			$pParamHash['real_name'] .= $pParamHash['last_name'];
+		}
+		// real_name
+		if( !empty( $pParamHash['real_name'] ) ) {
+			$pParamHash['user_store']['real_name'] = substr( $pParamHash['real_name'], 0, 64 );
+		}
+
 		// check some new user requirements
 		if( !$this->isRegistered() || $provisionalUser ) {
 			if( empty( $pParamHash['login'] ) ) {

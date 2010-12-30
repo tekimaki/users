@@ -14,7 +14,7 @@ $registerHash = array(
 $gBitSystem->registerPackage( $registerHash );
 
 /* ---- services ----- */
-define( 'CONTENT_SERVICE_USERS_FAVS', 'users_favorites' );
+define( 'CONTENT_SERVICE_USERS_FAVS', 'user_favorites' );
 /*
 $gLibertySystem->registerService( CONTENT_SERVICE_USERS_FAVS, 
 	USERS_PKG_NAME, 

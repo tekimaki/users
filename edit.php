@@ -241,4 +241,6 @@ $gBitSmarty->assign_by_ref( 'scramblingEmails', $scramblingEmails );
 // edit services
 $editUser->invokeServices( 'content_edit_function' );
 $gBitUser->invokeServices( 'content_display_function' );
-$gBitSystem->display( 'bitpackage:users/my_bitweaver.tpl', 'My Account', array( 'display_mode' => 'display' ));
+$pageTitle = tra('Account Settings');
+$gBitSmarty->assign('pageTitle',$pageTitle );
+$gBitSystem->display( 'bitpackage:users/my_bitweaver.tpl', $pageTitle, array( 'display_mode' => 'display' ));

@@ -51,7 +51,7 @@ $gBitSmarty->assign( 'gBitLanguage', $gBitLanguage );
 
 
 // process the preferences form
-if( isset( $_REQUEST["prefs"] )) {
+if( isset( $_REQUEST["prefs"] ) || isset( $_REQUEST["save_users_information"] )) {
 	$editUser->store( $_REQUEST );
 
 	// preferences

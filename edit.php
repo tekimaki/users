@@ -146,8 +146,7 @@ if( !empty( $_REQUEST['new_email'] ) && $_REQUEST['new_email'] != $editUser->get
 }
 
 // change user password
-if( isset( $_REQUEST["chgpswd"] ) && !empty( $_REQUEST['pass1'] ) ) {
-
+if( !empty( $_REQUEST['pass1'] ) ) {
 	// validate new pass
 	if( empty( $_REQUEST['pass2'] ) || $_REQUEST["pass1"] != $_REQUEST["pass2"] ) {
 		$feedback['errors']['pass2'] = tra("The passwords didn't match" );

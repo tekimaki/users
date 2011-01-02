@@ -20,7 +20,7 @@ require_once( '../kernel/setup_inc.php' );
 
 $gBitSystem->verifyFeature( 'users_forgot_pass' );
 
-$pageTitle = tra( 'Request Password Reminder' );
+$pageTitle = tra( 'Reset Password' );
 
 if( $gBitUser->isRegistered() ) {
 	header( 'Location: '.BIT_ROOT_URL );

@@ -47,5 +47,5 @@ if( !empty( $_REQUEST['error'] ) ) {
 	$gBitSmarty->assign( 'error', $_REQUEST['error'] );
 }
 
-$gBitSystem->display( 'bitpackage:users/login.tpl', $gBitSystem->getConfig( 'site_title' ).' Login' , array( 'display_mode' => 'display' ));
+$gBitSystem->display( 'bitpackage:users/login.tpl', tra('Login'), array( 'display_mode' => 'display' ));
 ?>

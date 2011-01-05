@@ -33,53 +33,62 @@ if( !isset( $_REQUEST["provpass"] )) {
 $gBitSmarty->assign( 'login', $_REQUEST['login'] );
 $gBitSmarty->assign( 'oldpass', $_REQUEST["oldpass"] );
 $gBitSmarty->assign( 'provpass', $_REQUEST["provpass"] );
+$gBitSmarty->assign( 'provpass', $_REQUEST["v"] );
 
 $userInfo = $gBitUser->getUserInfo( array( 'user_id' => $_REQUEST['user_id'] ));
 $gBitSmarty->assign_by_ref( 'userInfo', $userInfo );
 
 if( isset( $_REQUEST["change"] )) {
+	$validated = FALSE;
+	$errors = array();
 
 	if( $_REQUEST["pass"] == $_REQUEST["oldpass"] ) {
-		$gBitSystem->fatalError( tra( "You can not use the same password again" ));
+		$errors['pass'] = tra( "You can not use the same password again" );
 	}
 
-	if( $passswordError = $gBitUser->verifyPasswordFormat( $_REQUEST["pass"], $_REQUEST["pass2"] )) {
-		$gBitSystem->fatalError( tra( $passswordError ));
+	if( $passwordError = $gBitUser->verifyPasswordFormat( $_REQUEST["pass"], $_REQUEST["pass2"] )) {
+		$errors['pass'] = $passwordError;
 	}
 
-	$validated = FALSE;
-	if( !empty( $_REQUEST["provpass"] ) ) {
-		if( $validated = $gBitUser->confirmRegistration( $userInfo['user_id'], $_REQUEST["provpass"] ) ) {
-			if( $gBitSystem->isFeatureActive( 'send_welcome_email' ) ) {
-				$siteName = $gBitSystem->getConfig( 'site_title', $_SERVER['HTTP_HOST'] );
-				// Send the welcome mail
-				$gBitSmarty->assign( 'siteName', $_SERVER["SERVER_NAME"] );
-				$gBitSmarty->assign( 'mail_site', $_SERVER["SERVER_NAME"] );
-				$gBitSmarty->assign( 'mail_user', $userInfo['login'] );
-				$gBitSmarty->assign( 'mailPassword',$_REQUEST['pass'] );
-				$gBitSmarty->assign( 'mailEmail',$validated['email'] );
-				$mail_data = $gBitSmarty->fetch('bitpackage:users/welcome_mail.tpl');
-				global $gSwitchboardSystem;
-				$msg = array();
-				$recipients = array( array( 'email' => $validated['email'] ), );
-				$msg['recipients'] = $recipients;
-				$msg['subject'] = tra( 'Password changed for: ' ).$siteName;
-				$msg['alt_message'] = $mail_data;
-				$gSwitchboardSystem->sendEmail( $msg );
-			}
-		} else	{
+	if( empty( $errors ) ){
+		if( !empty( $_REQUEST["provpass"] ) ) {
+			if( $validated = $gBitUser->confirmRegistration( $userInfo['user_id'], $_REQUEST["provpass"] ) ) {
+				if( $gBitSystem->isFeatureActive( 'send_welcome_email' ) ) {
+					$siteName = $gBitSystem->getConfig( 'site_title', $_SERVER['HTTP_HOST'] );
+					// Send the welcome mail
+					$gBitSmarty->assign( 'siteName', $_SERVER["SERVER_NAME"] );
+					$gBitSmarty->assign( 'mail_site', $_SERVER["SERVER_NAME"] );
+					$gBitSmarty->assign( 'mail_user', $userInfo['login'] );
+					$gBitSmarty->assign( 'mailPassword',$_REQUEST['pass'] );
+					$gBitSmarty->assign( 'mailEmail',$validated['email'] );
+					$mail_data = $gBitSmarty->fetch('bitpackage:users/welcome_mail.tpl');
+					global $gSwitchboardSystem;
+					$msg = array();
+					$recipients = array( array( 'email' => $validated['email'] ), );
+					$msg['recipients'] = $recipients;
+					$msg['subject'] = tra( 'Password changed for: ' ).$siteName;
+					$msg['alt_message'] = $mail_data;
+					$gSwitchboardSystem->sendEmail( $msg );
+				}
+			} else	{
 				$gBitSystem->fatalError( tra("Password reset request is invalid or has expired") );
+			}
+		} elseif( !( $validated = $gBitUser->validate( $userInfo['email'], $_REQUEST["oldpass"], '', '' )) ) {
+			$errors['oldpass'] = tra("Invalid old password");
 		}
-	} elseif( !( $validated = $gBitUser->validate( $userInfo['email'], $_REQUEST["oldpass"], '', '' )) ) {
-		$gBitSystem->fatalError( tra("Invalid old password") );
 	}
 
 	if( $validated ) {
 		$gBitUser->storePassword( $_REQUEST["pass"], (!empty( $userInfo['login'] )?$userInfo['login']:$userInfo['email']) );
 		$url = $gBitUser->login( (!empty( $userInfo['login'] )?$userInfo['login']:$userInfo['email']), $_REQUEST["pass"] );
+		bit_redirect( $url );
 	}
-
-	bit_redirect( $url );
+	else{
+		$gBitSmarty->assign( 'errors', $errors );
+		if( !empty( $_REQUEST['v'] ) ){ 
+			include_once( USERS_PKG_PATH.'confirm.php' );
+		}
+	}
 }
 
 // Display the template

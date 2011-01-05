@@ -10,6 +10,7 @@
 			<input type="hidden" name="user_id" value="{$userInfo.user_id}" />
 			{if $userInfo.provpass}
 				<input type="hidden" name="provpass" value="{$userInfo.provpass|escape}" />
+				<input type="hidden" name="v" value="{$smarty.request.v}" />
 			{/if}
 
 			<div class="row">
@@ -23,6 +24,7 @@
 				<div class="row">
 					{formlabel label="Old Password" for="oldpass"}
 					{forminput}
+						{formfeedback error=$errors.oldpass}
 						<input type="password" name="oldpass" id="oldpass" />
 					{/forminput}
 				</div>
@@ -31,6 +33,7 @@
 			<div class="row">
 				{formlabel label="New Password" for="pass"}
 				{forminput}
+					{formfeedback error=$errors.pass}
 					<input type="password" name="pass" id="pass" />
 				{/forminput}
 			</div>
@@ -38,6 +41,7 @@
 			<div class="row">
 				{formlabel label="Again Please" for="pass2"}
 				{forminput}
+					{formfeedback error=$errors.pass2}
 					<input type="password" name="pass2" id="pass2" />
 				{/forminput}
 			</div>

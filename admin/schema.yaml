@@ -243,6 +243,7 @@ users:
   plugin_apis:
     function:
       - users_register
+      - users_expunge
     tpl:
       - user_register_inc
   contenttypes:

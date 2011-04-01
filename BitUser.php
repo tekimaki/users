@@ -2242,6 +2242,15 @@ class BitUser extends LibertyMime {
 		return( $ret );
 	}
 
+	function expungeFavorites( $pContentId ){
+		$ret = FALSE;
+		if( $this->verifyId( $pContentId ) ) {
+			$this->mDb->query( "DELETE FROM `".BIT_DB_PREFIX."users_favorites_map` WHERE `favorite_content_id`=?", array( $pContentId ) );
+			$ret = TRUE;
+		}
+		return( $ret );
+	}
+
 	function hasFavorite( $pContentId ) {
 		$ret = FALSE;
 		$rslt = $this->mDb->getOne( "SELECT `favorite_content_id` FROM `".BIT_DB_PREFIX."users_favorites_map` WHERE `user_id`=? AND `favorite_content_id`=?", array( $this->mUserId, $pContentId ) );
@@ -2662,6 +2671,15 @@ function users_expunge_attachment( &$pObject, $pParamHash=NULL ) {
 				."users_users` SET `{$type}_attachment_id` = NULL WHERE `{$type}_attachment_id` = ?";
 			$pObject->mDb->query( $sql, array( $pAttachmentId ));
 		}
+	}
+}
+
+function users_content_expunge( &$pObject, $pParamHash=NULL )
+{
+	if( $pObject->hasService( CONTENT_SERVICE_USERS_FAVS ) )
+	{
+		$User = new BitUser();
+		$User->expungeFavorites( $pObject->mContentId );
 	}
 }
 

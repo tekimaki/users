@@ -93,71 +93,75 @@ if( isset( $_REQUEST["action"] ) ) {
 			$gBitSystem->confirmDialog( $formHash, $msgHash );
 		}
 	} elseif( $_REQUEST["action"] == 'delete' ||  $_REQUEST["action"] == 'ban' ||  $_REQUEST["action"] == 'unban'  ) {
-		$formHash['user_id'] = $_REQUEST['user_id'];
-		$userClass = $gBitSystem->getConfig( 'user_class', 'BitPermUser' );
-		$reqUser = new $userClass( $_REQUEST["user_id"] );
-		$reqUser->load();
-		if( $reqUser->isValid() ){
-			$reqUser->verifyAdminPermission();
+		if( !empty( $_REQUEST['user_id'] ) ){
+			$formHash['user_id'] = $_REQUEST['user_id'];
+			$userClass = $gBitSystem->getConfig( 'user_class', 'BitPermUser' );
+			$reqUser = new $userClass( $_REQUEST["user_id"] );
+			$reqUser->load();
+			if( $reqUser->isValid() ){
+				$reqUser->verifyAdminPermission();
 
-			$userInfo = $reqUser->mInfo;
+				$userInfo = $reqUser->mInfo;
 
-			if( isset( $_REQUEST["confirm"] ) ) {
-				$gBitUser->verifyTicket();
-				switch(  $_REQUEST["action"] ){
-					case 'delete':
-						$reqUser->mDb->StartTrans();
-						if( $reqUser->load(TRUE) && $reqUser->expunge( !empty( $_REQUEST['delete_user_content'] ) ? $_REQUEST['delete_user_content'] : NULL ) ) {
-							$feedback['success'][] = tra( 'User deleted' )." <strong>{$userInfo['real_name']} ({$userInfo['login']})</strong>";
-						}
-						$reqUser->mDb->CompleteTrans();
-						break;
-					case 'ban':
-						if( $reqUser->load() && $reqUser->ban() ) {
-							$feedback['success'][] = tra( 'User banned' )." <strong>{$userInfo['real_name']} ({$userInfo['login']})</strong>";
-						}
-						break;
-					case 'unban':
-						if( $reqUser->load() && $reqUser->unban() ) {
-							$feedback['success'][] = tra( 'User restored' )." <strong>{$userInfo['real_name']} ({$userInfo['login']})</strong>";
-						}
-						break;
+				if( isset( $_REQUEST["confirm"] ) ) {
+					$gBitUser->verifyTicket();
+					switch(  $_REQUEST["action"] ){
+						case 'delete':
+							$reqUser->mDb->StartTrans();
+							if( $reqUser->load(TRUE) && $reqUser->expunge( !empty( $_REQUEST['delete_user_content'] ) ? $_REQUEST['delete_user_content'] : NULL ) ) {
+								$feedback['success'][] = tra( 'User deleted' )." <strong>{$userInfo['real_name']} ({$userInfo['login']})</strong>";
+							}
+							$reqUser->mDb->CompleteTrans();
+							break;
+						case 'ban':
+							if( $reqUser->load() && $reqUser->ban() ) {
+								$feedback['success'][] = tra( 'User banned' )." <strong>{$userInfo['real_name']} ({$userInfo['login']})</strong>";
+							}
+							break;
+						case 'unban':
+							if( $reqUser->load() && $reqUser->unban() ) {
+								$feedback['success'][] = tra( 'User restored' )." <strong>{$userInfo['real_name']} ({$userInfo['login']})</strong>";
+							}
+							break;
+					}
+				} else {
+					switch( $_REQUEST["action"] ){
+						case 'delete':
+							$formHash['input'][] = "<input type='checkbox' name='delete_user_content' value='all' checked='checked'/>".tra( 'Delete all content created by this user' );
+							foreach( $gLibertySystem->mContentTypes as $contentTypeGuid => $contentTypeHash ) {
+	//							$formHash['input'][] = "<input type='checkbox' name='delete_user_content' checked='checked' value='$contentTypeGuid'/>Delete All User's $gLibertySystem->getContentTypeName($contentTypeHash['content_type_guid'],TRUE)";
+							}
+
+							$gBitSystem->setBrowserTitle( tra( 'Delete user' ) );
+							$msgHash = array(
+								'confirm_item' => tra( 'Are you sure you want to remove the user?' ),
+								'warning' => tra( 'This will permentally delete the user' )." <strong>$userInfo[real_name] ($userInfo[login])</strong>",
+							);
+							break;
+						case 'ban':
+							$gBitSystem->setBrowserTitle( tra( 'Ban user' ) );
+							$msgHash = array(
+								'confirm_item' => tra( 'Are you sure you want to ban this user?' ),
+								'warning' => tra( 'This will suspend the account for user' )." <strong>$userInfo[real_name] ($userInfo[login])</strong>",
+								'title' => tra( 'Ban User Confirmation' ),
+								'submit_label' => tra( 'Ban' ),
+							);
+							break;
+						case 'unban':
+							$gBitSystem->setBrowserTitle( tra( 'Unban user' ) );
+							$msgHash = array(
+								'confirm_item' => tra( 'Are you sure you want to unban this user?' ),
+								'warning' => tra( 'This will restore the account for user' )." <strong>$userInfo[real_name] ($userInfo[login])</strong>",
+							);
+							break;
+					}
+					$gBitSystem->confirmDialog( $formHash,$msgHash );
 				}
 			} else {
-				switch( $_REQUEST["action"] ){
-					case 'delete':
-						$formHash['input'][] = "<input type='checkbox' name='delete_user_content' value='all' checked='checked'/>".tra( 'Delete all content created by this user' );
-						foreach( $gLibertySystem->mContentTypes as $contentTypeGuid => $contentTypeHash ) {
-//							$formHash['input'][] = "<input type='checkbox' name='delete_user_content' checked='checked' value='$contentTypeGuid'/>Delete All User's $gLibertySystem->getContentTypeName($contentTypeHash['content_type_guid'],TRUE)";
-						}
-
-						$gBitSystem->setBrowserTitle( tra( 'Delete user' ) );
-						$msgHash = array(
-							'confirm_item' => tra( 'Are you sure you want to remove the user?' ),
-							'warning' => tra( 'This will permentally delete the user' )." <strong>$userInfo[real_name] ($userInfo[login])</strong>",
-						);
-						break;
-					case 'ban':
-						$gBitSystem->setBrowserTitle( tra( 'Ban user' ) );
-						$msgHash = array(
-							'confirm_item' => tra( 'Are you sure you want to ban this user?' ),
-							'warning' => tra( 'This will suspend the account for user' )." <strong>$userInfo[real_name] ($userInfo[login])</strong>",
-							'title' => tra( 'Ban User Confirmation' ),
-							'submit_label' => tra( 'Ban' ),
-						);
-						break;
-					case 'unban':
-						$gBitSystem->setBrowserTitle( tra( 'Unban user' ) );
-						$msgHash = array(
-							'confirm_item' => tra( 'Are you sure you want to unban this user?' ),
-							'warning' => tra( 'This will restore the account for user' )." <strong>$userInfo[real_name] ($userInfo[login])</strong>",
-						);
-						break;
-				}
-				$gBitSystem->confirmDialog( $formHash,$msgHash );
+				$feedback['error'][] = tra( 'User not found' );
 			}
 		} else {
-			$feedback['error'][] = tra( 'User not found' );
+			$feedback['error'][] = tra( 'No users were selected' );
 		}
 	}
 	if ($_REQUEST["action"] == 'removegroup') {
